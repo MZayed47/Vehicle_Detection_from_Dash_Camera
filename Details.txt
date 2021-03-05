@@ -1,0 +1,7 @@
+Vehicle_Detection_from_Dash_Camera
+
+This is a project built with Python3 to detect on-road vehicles from Dash cameras in cars. I have used Keras and TensorFlow as background. The algorithm I have used is YOLOv3.
+
+
+
+
