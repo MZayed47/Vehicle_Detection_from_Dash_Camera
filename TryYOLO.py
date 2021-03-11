@@ -165,9 +165,9 @@ image_shape = (720., 1280.)
 
 yolo_model = load_model("model_data/yolo.h5")
 
-yolo_model.summary()
+#yolo_model.summary()
 
-yolo_outputs = yolo_head(yolo_model.output[0], anchors, len(class_names))
+yolo_outputs = yolo_head(yolo_model.output, anchors, len(class_names))
 
 scores, boxes, classes = yolo_eval(yolo_outputs, image_shape)
 
@@ -202,6 +202,6 @@ def predict(sess, image_file):
     return out_scores, out_boxes, out_classes
 
 
-out_scores, out_boxes, out_classes = predict(sess, "test.jpg")
+out_scores, out_boxes, out_classes = predict(sess, "test2.png")
 
 
