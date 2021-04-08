@@ -40,6 +40,7 @@ def yolo_filter_boxes(box_confidence, boxes, box_class_probs, threshold = .6):
     return scores, boxes, classes
 
 
+'''
 with tf.Session() as test_a:
     box_confidence = tf.random_normal([19, 19, 5, 1], mean=1, stddev=4, seed = 1)
     boxes = tf.random_normal([19, 19, 5, 4], mean=1, stddev=4, seed = 1)
@@ -51,7 +52,7 @@ with tf.Session() as test_a:
     print("scores.shape = " + str(scores.shape))
     print("boxes.shape = " + str(boxes.shape))
     print("classes.shape = " + str(classes.shape))
-
+'''
 
 
 # GRADED FUNCTION: iou
@@ -79,6 +80,7 @@ def iou(box1, box2):
     return iou
 
 
+'''
 ## Test case 1: boxes intersect
 box1 = (2, 1, 4, 3)
 box2 = (1, 2, 3, 4) 
@@ -98,7 +100,7 @@ print("iou for boxes that only touch at vertices = " + str(iou(box1,box2)))
 box1 = (1,1,3,3)
 box2 = (2,3,3,4)
 print("iou for boxes that only touch at edges = " + str(iou(box1,box2)))
-
+'''
 
 
 # GRADED FUNCTION: yolo_non_max_suppression
@@ -114,6 +116,7 @@ def yolo_non_max_suppression(scores, boxes, classes, max_boxes = 10, iou_thresho
     return scores, boxes, classes
 
 
+'''
 with tf.Session() as test_b:
     scores = tf.random_normal([54,], mean=1, stddev=4, seed = 1)
     boxes = tf.random_normal([54, 4], mean=1, stddev=4, seed = 1)
@@ -125,7 +128,7 @@ with tf.Session() as test_b:
     print("scores.shape = " + str(scores.eval().shape))
     print("boxes.shape = " + str(boxes.eval().shape))
     print("classes.shape = " + str(classes.eval().shape))
-
+'''
 
 
 # GRADED FUNCTION: yolo_eval
@@ -140,6 +143,7 @@ def yolo_eval(yolo_outputs, image_shape = (720., 1280.), max_boxes=10, score_thr
     return scores, boxes, classes
 
 
+'''
 with tf.Session() as test_b:
     yolo_outputs = (tf.random_normal([19, 19, 5, 1], mean=1, stddev=4, seed = 1),
                     tf.random_normal([19, 19, 5, 2], mean=1, stddev=4, seed = 1),
@@ -152,12 +156,12 @@ with tf.Session() as test_b:
     print("scores.shape = " + str(scores.eval().shape))
     print("boxes.shape = " + str(boxes.eval().shape))
     print("classes.shape = " + str(classes.eval().shape))
-
+'''
 
 
 # Test YOLO pre-trained model on images
 
-sess = K.get_session()
+sess = tf.compat.v1.keras.backend.get_session()
 
 class_names = read_classes("model_data/coco_classes.txt")
 anchors = read_anchors("model_data/yolo_anchors.txt")
@@ -202,6 +206,51 @@ def predict(sess, image_file):
     return out_scores, out_boxes, out_classes
 
 
-out_scores, out_boxes, out_classes = predict(sess, "test.png")
+out_scores, out_boxes, out_classes = predict(sess, "test.jpg")
 
 
+'''
+# Run the graph on an image
+
+import os
+import re
+import cv2 # opencv library
+from os.path import isfile, join
+
+def predict(sess, image_file):
+    
+    # get file names of the frames
+    col_frames = os.listdir('images/')
+    
+    # sort file names
+    col_frames.sort(key=lambda f: int(re.sub('\D', '', f)))
+    
+    for i in col_frames:
+    
+        # Preprocess your image
+        image, image_data = preprocess_image("images/" + i, model_image_size = (608, 608))
+    
+        out_scores, out_boxes, out_classes = sess.run([scores, boxes, classes], feed_dict={yolo_model.input: image_data, K.learning_phase(): 0})
+    
+        print('Found {} boxes for {}'.format(len(out_boxes), image_file))
+    
+        # Generate colors for drawing bounding boxes.
+        colors = generate_colors(class_names)
+    
+        # Draw bounding boxes on the image file
+        draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors)
+    
+        # Save the predicted bounding box on the image
+        image.save(os.path.join("out", image_file), quality=90)
+    
+        # Display the results in the notebook
+        output_image = scipy.misc.imread(os.path.join("out", image_file))
+    
+        #plt.figure(figsize=(12,12))
+        imshow(output_image)
+
+    return out_scores, out_boxes, out_classes
+
+out_scores, out_boxes, out_classes = predict(sess, "test.jpg")
+
+'''

@@ -80,4 +80,3 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
         draw.rectangle([tuple(text_origin), tuple(text_origin + label_size)], fill=colors[c])
         draw.text(text_origin, label, fill=(0, 0, 0), font=font)
         del draw
-
